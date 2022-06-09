@@ -63,30 +63,7 @@ class crudMaster:
         else:
             input('Operation Canceled. \n')
 
-    def viewColumn(self):
-        for (i, j) in enumerate(self.dataFrame.keys()):
-            print("|", i + 1, "|", j)
-
-        columnChoice = input('\nWhich column do you want to see? [NUM/STR]: ')
-        limitChoice = int(input('How many lines do you want to see? [0 TO ALL]: '))
-
-        if columnChoice.strip().isdigit():
-            if limitChoice == 0:
-                print(tabulate(data(self.dataFrame[self.dataFrame.iloc[:, int(columnChoice) - 1].name][:self.dataFrame.get(-1)]),
-                               headers='keys',
-                               tablefmt='pretty'))
-            else:
-                print(tabulate(data(self.dataFrame[self.dataFrame.iloc[:, int(columnChoice) - 1].name][:limitChoice]),
-                               headers='keys',
-                               tablefmt='pretty'))
-        else:
-            if limitChoice == 0:
-                print(tabulate(data(self.dataFrame[columnChoice][:self.dataFrame.get(-1)]), headers='keys', tablefmt='pretty'))
-            else:
-                print(tabulate(data(self.dataFrame[columnChoice][:limitChoice]), headers='keys', tablefmt='pretty'))
-        return columnChoice, limitChoice
-
-    def viewColumn(self, dataFrame):
+    def viewHeader(self, dataFrame):
         for (i, j) in enumerate(dataFrame.keys()):
             print("|", i + 1, "|", j)
 
@@ -115,8 +92,9 @@ class crudMaster:
         print(tabulate(data(newDf[newDf.apply(lambda row: row.astype(str).str.contains(some_value).any(), axis=1)]),
                        headers='keys', tablefmt='pretty'))
 
-    def searchInRow(self):
-        self.viewColumn(self.dataFrame)
+    def searchForRow(self):
+        for (i, j) in enumerate(self.dataFrame.keys()):
+            print("|", i + 1, "|", j)
 
         opUser = int(input('\nWhich column do you want to look for? [INT]: '))
         some_value = input("What value do you want?: ")
@@ -133,8 +111,12 @@ class crudMaster:
                            tablefmt='pretty'))
 
     def addValue(self):
-        column_names = ['Nome', 'CEP', 'Email', 'TelefonePrincipal', 'NumeroCNPJ']
+        # CREATE DEFAULT DATAFRAME REFERENCE USE
+        column_names = ['CodigoEstabelecimento', 'Nome', 'CEP', 'Email', 'TelefonePrincipal', 'NumeroCNPJ']
         baseDf = pd.DataFrame(columns=column_names)
+
+        # CODIGO ESTABELECIMENTO TO INCREMENT FISRT COLUMNS WHEN INPUT LINE
+        cod = self.dataFrame['CodigoEstabelecimento'].iloc[-1]
 
         print("\n============================"
               "\n|     Required fields:     |"
@@ -165,7 +147,8 @@ class crudMaster:
                 print("CNPJ Inválido.")
                 break
 
-            inputDf = pd.DataFrame({'Nome': nome,
+            inputDf = pd.DataFrame({'CodigoEstabelecimento': cod + 1,
+                                    'Nome': nome,
                                     'CEP': cep,
                                     'Email': email,
                                     'TelefonePrincipal': telPrin,
@@ -182,10 +165,9 @@ class crudMaster:
                 updateDf = pd.concat([self.dataFrame, baseDf], ignore_index=True).replace(to_replace=pd.NA, value=None)
 
                 # COLUMNS FOR LIST.
-                headersList = ['Nome', 'CEP', 'Email', 'TelefonePrincipal', 'NumeroCNPJ']
+                headersList = ['CodigoEstabelecimento', 'Nome', 'CEP', 'Email', 'TelefonePrincipal', 'NumeroCNPJ']
 
                 # PRINTS FOR USER REFERENCE.
-                print("Table Updated Successfully.")
                 print(tabulate(data(updateDf[headersList].tail()), headers='keys', tablefmt='pretty'))
 
                 # UPDATE DATAFRAME WITH USER INPUT DATA.
@@ -193,7 +175,7 @@ class crudMaster:
                 break
 
     def deleteValue(self):
-        opUser, opLimit = self.viewColumn(self.dataFrame)
+        opUser, opLimit = self.viewHeader(self.dataFrame)
 
         while True:
             deleteChoice = int(input('Enter the line you want to remove [INDEX]: '))
@@ -215,7 +197,7 @@ class crudMaster:
                 break
 
     def updateValue(self):
-        opUser, opLimit = self.viewColumn(self.dataFrame)
+        opUser, opLimit = self.viewHeader(self.dataFrame)
 
         #  CREATE A NEW DATAFRAME WITH ALL USER-SPECIFIED COLUMN ROWS
         ndf = pd.DataFrame(self.dataFrame[self.dataFrame.iloc[:, int(opUser) - 1].name][:opLimit])
