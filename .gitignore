@@ -1,0 +1,5 @@
+# EXCLUDE DEFAULT FOLDERS
+
+.idea/
+venv/
+
