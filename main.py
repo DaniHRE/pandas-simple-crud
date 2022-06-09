@@ -25,13 +25,32 @@ if __name__ == '__main__':
 
     # MAKE MENU FOR OPTIONS
 
-    # cd.searchInRow()
-    # cd.viewHeaders()
-    # cd.viewColumn()
-    # cd.searchInTable()
-    # cd.addValue()
-    # cd.deleteValue()
-    # cd.updateValue()
+    print('==================================')
+    print('            PANDAS CRUD           ')
+    print('==================================')
+    print(' 1 - Search for a Row')
+    print(' 2 - View Header')
+    print(' 3 - Search in Table')
+    print(' 4 - Add Value')
+    print(' 5 - Delete Value')
+    print(' 6 - Update Value')
+    print(' 0 - Exit')
+    print('==================================')
+    opUser = int(input(''))
 
-    # FOR NEXT UPDATE PASS TO CLASS OBJECTS AND CREATE A MAIN MENU TO SELECT OPTIONS
-    pass
+    if opUser == 1:
+        cd.searchForRow()
+    elif opUser == 2:
+        cd.viewHeader(df)
+    elif opUser == 3:
+        cd.searchInTable()
+    elif opUser == 4:
+        cd.addValue()
+    elif opUser == 5:
+        cd.deleteValue()
+    elif opUser == 6:
+        cd.updateValue()
+    elif opUser == 0:
+        print('Close Program.')
+        pass
+
